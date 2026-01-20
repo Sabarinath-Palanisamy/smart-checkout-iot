@@ -22,7 +22,8 @@ export const analyzeProduct = (barcodeData, stocksRemaining, saleRate) => {
 
   // 1. Safety Hard-Stop
   if (expiryDate < today) {
-    return { status: "EXPIRED", color: "#ff4d4d", msg: "BLOCK SALE: Product Expired!" };
+    console.log(expiryDate);
+    return { status: "EXPIRED", color: "#ff4d4d", msg: `BLOCK SALE: Product Expired on ${expiryDate.toDateString()}` };
   }
 
   // 2. Inventory Pressure Logic (The "AI" part)
@@ -37,9 +38,9 @@ export const analyzeProduct = (barcodeData, stocksRemaining, saleRate) => {
       status: "DISCOUNT", 
       color: "#ffa500", 
       val: (discount * 100).toFixed(0),
-      msg: `RESCUE DISCOUNT: ${ (discount * 100).toFixed(0) }% applied.` 
+      msg: `Product going to expire on ${expiryDate.toDateString()}. Applying RESCUE DISCOUNT: ${ (discount * 100).toFixed(0) }% applied.` 
     };
   }
 
-  return { status: "VALID", color: "#2ecc71", msg: "VALID: Added to basket." };
+  return { status: "VALID", color: "#2ecc71", msg: `Expire date: ${expiryDate.toDateString()}. Added to basket.` };
 };
