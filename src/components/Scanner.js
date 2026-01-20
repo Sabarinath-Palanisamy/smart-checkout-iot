@@ -8,7 +8,7 @@
  * Passes the raw barcode string back to the parent App controller.
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const Scanner = ({ onScan }) => {
   const [val, setVal] = useState("");

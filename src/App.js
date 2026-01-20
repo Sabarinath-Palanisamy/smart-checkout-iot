@@ -7,7 +7,7 @@
  * - scanResult: Stores the outcome of the most recent product analysis.
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Scanner from './components/Scanner';
 import DisplayAlert from './components/DisplayAlert';
 import { analyzeProduct } from '../src/logic/aiEngine';

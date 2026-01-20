@@ -10,6 +10,7 @@
  */
 
 export const analyzeProduct = (barcodeData, stocksRemaining, saleRate) => {
+  const DANGER_ZONE_DAYS = 3;
   // Extract Expiry: (01)GTIN(17)YYMMDD
   const expiryRaw = barcodeData.substring(12, 18);
   const year = 2000 + parseInt(expiryRaw.substring(0, 2));
@@ -18,18 +19,17 @@ export const analyzeProduct = (barcodeData, stocksRemaining, saleRate) => {
 
   const expiryDate = new Date(year, month, day);
   const today = new Date();
-  const daysLeft = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
+  const daysLeft = Math.max(1, Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24)));
 
   // 1. Safety Hard-Stop
   if (expiryDate < today) {
-    console.log(expiryDate);
     return { status: "EXPIRED", color: "#ff4d4d", msg: `BLOCK SALE: Product Expired on ${expiryDate.toDateString()}` };
   }
 
   // 2. Inventory Pressure Logic (The "AI" part)
   const requiredDailySale = stocksRemaining / daysLeft;
   
-  if (requiredDailySale > saleRate) {
+  if (requiredDailySale > saleRate && daysLeft <= DANGER_ZONE_DAYS) {
     const gap = (requiredDailySale - saleRate) / requiredDailySale;
     let discount = Math.min(0.9, gap * 0.5); // Dynamic scaling
     if (daysLeft === 1) discount = Math.max(discount, 0.8); // Floor for last day
